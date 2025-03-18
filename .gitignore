@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# dataSet
+*.npy
+*.npz
+
 # Distribution / packaging
 .Python
 build/
