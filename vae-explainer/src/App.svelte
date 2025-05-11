@@ -32,6 +32,7 @@
 	} from "./lib/stores";
 	import { writable, derived, get } from "svelte/store";
 	import Code from "./lib/Code.svelte";
+    import { lab } from "d3";
 
 	function toGrey(d) {
 		const result = new Uint8ClampedArray(d.length / 4);
@@ -57,8 +58,10 @@
 	}
 
 	const compGraph = true;
-	const inputOutputCanvasSize = 300;
-	const scatterSquare = 200;
+	const inputOutputCanvasSize = 370;
+	const scatterSquare = 270;
+	const latentWidth = 270;
+	const latentHeight = 450;
 	const trapWidth = 100;
 	const images = [1, 2, 3, 4, 5, 7].map((d) => `images/${d}.png`);
 	let rawImages;
@@ -67,6 +70,7 @@
 	let inDisp = Array(784).fill(0);
 	let outDisp = Array(784).fill(0);
 	let drawImage = Array(784).fill(0);
+	let boldness = 0.2;
 	//let stddevs = Array(latentDims).fill(1);
 	//let means = Array(latentDims).fill(0);
 	const zs = writable(Array(latentDims).fill(0));
@@ -119,6 +123,8 @@
 			// $stddevs = tf.exp(logvar.mul(0.5)).arraySync()[0];
 			// $means = mean.arraySync()[0];
 			$zs = z.arraySync()[0];
+			zz =  z.arraySync()[0];
+			
 			// const input_dec_lbl = tf.tensor([dec_lbl], [1], 'int32');
 			const input_dec_lbl = tf.oneHot(tf.tensor([dec_lbl], [1], "int32"), 11);
 			const xHat = dec.predict([input_dec_lbl, z]).reshape([-1, 784]);
@@ -203,73 +209,38 @@
 		<ImageSelector imageUrls={images} bind:selectedUrl={selectedImage} />
 	</div>
 
-	<div class="latent-slider-container">
-		{#each Array.from({ length: latentDims }, (_, i) => i) as index}
-			<div class="latent-slider">
-				<label for="latent-slider-{index}">Latent Dim {index}</label>
-				<input
-					id="latent-slider-{index}"
-					type="range"
-					min="-5"
-					max="5"
-					step="0.1"
-					bind:value={zz[index]}
-					on:input={() => {
-						tf.tidy(() => {
-							const z = tf.tensor(zz, [1, latentDims]);
-							// console.log("z", z);
-							// const xHat = dec.predict(z).reshape([-1, 784]);
-							const input_dec_lbl = tf.oneHot(tf.tensor([dec_lbl], [1], "int32"), 11);
-							const dec = models[`${cur_enc_drate},${cur_dec_drate}`][1];
-							const xHat = dec.predict([input_dec_lbl, z]).reshape([-1, 784]);
-
-							// console.log("xHat", xHat);
-							outDisp = xHat.arraySync()[0];
-						});
-					}}
-				/>
-			</div>
-		{/each}
-	</div>
+	
 
 
 	<div class="mb-2 flex gap-2 items-center">
-		<label for="enc-drate-selector">Encoder Dropout Rate:</label>
-		<select id="enc-drate-selector" bind:value={cur_enc_drate} class="border p-1 text-black bg-white" on:change={forward(inDisp)}>
+		<label for="enc-drate-selector" class="font-large text-gray-300">Encoder Dropout Rate:</label>
+		<select id="enc-drate-selector" bind:value={cur_enc_drate} class="border border-gray-200 rounded-md p-2 text-gray-300 bg-black w-20" on:change={forward(inDisp)}>
 			{#each enc_drate_list as drate}
 				<option 
-					value={drate} class="text-black bg-white">{drate}
+					value={drate} class="text-white bg-black">{drate}
 				</option>
 			{/each}
 		</select>
-	</div>
-	
-	<div class="mb-2 flex gap-2 items-center">
-		<label for="dec-drate-selector">Decoder Dropout Rate:</label>
-		<select id="dec-drate-selector" bind:value={cur_dec_drate} class="border p-1 text-black bg-white" on:change={forward(inDisp)}>
+		<label for="dec-drate-selector" class="font-large text-gray-300">Decoder Dropout Rate:</label>
+		<select id="dec-drate-selector" bind:value={cur_dec_drate} class="border border-gray-200 rounded-md p-2 text-gray-300 bg-black w-20" on:change={forward(inDisp)}>
 			{#each dec_drate_list as drate}
-				<option value={drate} class="text-black bg-white">{drate}</option>
+				<option value={drate} class="text-white bg-black">{drate}</option>
 			{/each}
 		</select>
-	</div>
-
-	<div class="mb-2 flex gap-2 items-center">
-		<label for="enc-lbl-selector">Encoder Label :</label>
-		<select id="enc-lbl-selector" bind:value={enc_lbl} class="border p-1 text-black bg-white" on:change={forward(inDisp)}>
+		<label for="enc-lbl-selector" class="font-large text-gray-300">Encoder Label :</label>
+		<select id="enc-lbl-selector" bind:value={enc_lbl} class="border border-gray-200 rounded-md p-2 text-gray-300 bg-black w-20" on:change={forward(inDisp)}>
 			{#each enc_lbl_list as lbl}
-				<option value={lbl} class="text-black bg-white">{lbl}</option>
+				<option value={lbl} class="text-white bg-black">{lbl}</option>
+			{/each}
+		</select>
+		<label for="dec-lbl-selector" class="font-large text-gray-300">Decoder Label :</label>
+		<select id="dec-lbl-selector" bind:value={dec_lbl} class="border border-gray-200 rounded-md p-2 text-gray-300 bg-black w-20" on:change={forward(inDisp)}>
+			{#each dec_lbl_list as lbl}
+				<option value={lbl} class="text-white bg-black">{lbl}</option>
 			{/each}
 		</select>
 	</div>
 	
-	<div class="mb-2 flex gap-2 items-center">
-		<label for="dec-lbl-selector">Decoder Label :</label>
-		<select id="dec-lbl-selector" bind:value={dec_lbl} class="border p-1 text-black bg-white" on:change={forward(inDisp)}>
-			{#each dec_lbl_list as lbl}
-				<option value={lbl} class="text-black bg-white">{lbl}</option>
-			{/each}
-		</select>
-	</div>
 
 	<svg
 		width={xDigit2 + inputOutputCanvasSize + 100}
@@ -278,7 +249,7 @@
 	>
 		<foreignObject
 			x={xDigit1}
-			y={0}
+			y={40}
 			width={inputOutputCanvasSize}
 			height={inputOutputCanvasSize}
 			style="overflow: visible;"
@@ -286,6 +257,7 @@
 			<MnistDigit
 				style="outline: 2px solid var(--pink); cursor: crosshair;"
 				enableDrawing
+				boldness = {boldness}
 				data={inDisp}
 				square={inputOutputCanvasSize}
 				maxVal={1}
@@ -294,6 +266,47 @@
 					forward(d);
 				}}
 			></MnistDigit>
+			<div class="boldness-slider">
+				<div class="slider-label">Boldness</div>
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					bind:value={boldness}
+					on:input={() => {
+						console.log(`Boldness: ${boldness}`);
+					}}
+				/>
+				<div class="slider-value">{boldness.toFixed(2)}</div>
+				
+			<style>
+				.boldness-slider {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					gap: 10px;
+					padding: 10px;
+					border: 1px solid #ccc;
+					border-radius: 5px;
+				}
+				.slider-label {
+					font-size: 1em;
+					font-weight: bold;
+					color: #999;
+				}
+				.slider-value {
+					font-size: 0.9em;
+					color: #666;
+				}
+				input[type="range"] {
+					width: 100%;
+					height: 10px;
+					background: #ddd;
+					accent-color: #4caf50;
+				}
+			</style>
+			</div>
 			<Button
 				class="mt-2"
 				size="xs"
@@ -310,38 +323,13 @@
 			fill="--pink"
 			fill2="--purple"
 			x={xTrap1}
-			y={0}
+			y={40}
 			width={trapWidth}
 			height={inputOutputCanvasSize}
 			trapHeights={[inputOutputCanvasSize, scatterSquare]}
 		/>
 
-		<foreignObject
-			x={xLatent}
-			y={yLatent + scatterSquare + 30}
-			width={200}
-			height={50}
-		>
-			<Button
-				size="xs"
-				color="light"
-				style="width: 200px;"
-				on:click={() => {
-					if (expanded) {
-						$cExpansion = minimizedSize;
-					} else {
-						$cExpansion = expandedSize;
-					}
-					expanded = !expanded;
-				}}
-			>
-				{#if expanded}
-					<MinimizeOutline class="mr-1" size="sm" /> Minimize Details
-				{:else}
-					<ExpandOutline class="mr-1" size="sm" /> Explain VAE Details
-				{/if}
-			</Button>
-		</foreignObject>
+		
 
 
 		<Trapezoid
@@ -349,17 +337,66 @@
 			fill="--light-blue"
 			fill2="--green"
 			x={xTrap2}
-			y={0}
+			y={40}
 			width={trapWidth}
 			height={inputOutputCanvasSize}
 			trapHeights={[scatterSquare, inputOutputCanvasSize]}
 		/>
 
+		<foreignObject
+			x={xLatent}
+			y={20}
+			width={latentWidth}
+			height={latentHeight}
+			style="overflow: visible;outline: 2px solid var(--purple);\
+			padding-left: 10px; padding-right: 5px; padding-top: 10px; \
+			padding-bottom: 10px; "
+		>
+		<div class="latent-slider-container">
+			{#each Array.from({ length: latentDims }, (_, i) => i) as index}
+				<div class="latent-slider" style="display: flex; align-items: center; justify-content: space-between;">
+				<div class="latent-slider-label" style="display: flex; align-items: center;">
+					<label for="latent-slider-{index}" style="padding-left: 10px;width: 30px; margin-right: 5px; font-size: 0.9em;">
+						{index + 1}
+					</label>
+					<div style="width: 1px; height: 15px; background-color: #ccc; margin: 0 2px;"></div>
+						<code style="font-size: 0.8em; color: #666;">
+							{zz[index].toFixed(2)}
+						</code>
+					</div>
+					<input
+						id="latent-slider-{index}"
+						type="range"
+						min="-5"
+						max="5"
+						step="0.1"
+						
+						bind:value={zz[index]}
+						on:input={() => {
+							tf.tidy(() => {
+								const z = tf.tensor(zz, [1, latentDims]);
+								// console.log("z", z);
+								// const xHat = dec.predict(z).reshape([-1, 784]);
+								const input_dec_lbl = tf.oneHot(tf.tensor([dec_lbl], [1], "int32"), 11);
+								const dec = models[`${cur_enc_drate},${cur_dec_drate}`][1];
+								const xHat = dec.predict([input_dec_lbl, z]).reshape([-1, 784]);
+
+								// console.log("xHat", xHat);
+								outDisp = xHat.arraySync()[0];
+							});
+						}}
+						style="flex: 1; height: 2px; margin-left: 10px;"
+					/>
+				</div>
+			{/each}
+		</div>
+		</foreignObject>
+
 
 
 		<foreignObject
 			x={xDigit2}
-			y={0}
+			y={40}
 			width={inputOutputCanvasSize}
 			height={inputOutputCanvasSize}
 			style="overflow: visible;"
