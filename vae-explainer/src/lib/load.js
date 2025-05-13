@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs";
 
-const filepath = "tfjs_models_10D";
+const filepath = "tfjs_models";
 
 
 
