@@ -10,4 +10,8 @@ which runs the hot-reloading dev server at http://localhost:5173
 
 ## Download Model
 
-Tsinghua cloud link: https://cloud.tsinghua.edu.cn/d/eae39300ea7b4e96ae19/
+Tsinghua cloud link: https://cloud.tsinghua.edu.cn/d/eae39300ea7b4e96ae19/, download the directory `tfjs_models.zip`, unzip it and move into path `public/tfjs_models/`.
+
+## Acknowledgement
+
+[VAE-explainer](https://xnought.github.io/vae-explainer/) by xnought.

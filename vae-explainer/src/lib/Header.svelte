@@ -17,14 +17,14 @@
 		<div class="right">
 			<Button
 				size="xs"
-				href="https://github.com/xnought/vae-explainer"
+				href="https://github.com/Integer003/CV-project"
         target="_blank"
         {color}
         outline
 				>Code
 				<GithubSolid size="md" class="ml-1" />
 			</Button>
-			<Button
+			<!-- <Button
 				size="xs"
 				href="https://arxiv.org/abs/2409.09011"
         target="_blank"
@@ -32,7 +32,7 @@
         outline
 				>Paper
 				<FilePdfSolid size="md" class="ml-1" />
-			</Button>
+			</Button> -->
 		</div>
 	</div>
 </nav>
