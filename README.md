@@ -1,16 +1,18 @@
 # Interactive VAE-explainer
 
-## Development
+## Get started
+
+### Download Model
+
+Tsinghua cloud link: https://cloud.tsinghua.edu.cn/d/1a64ec43e6454169a8da/, download the directory `tfjs_models.zip`, unzip it and move into path `public/tfjs_models/`.
+
+### Development
 ``` bash
 pnpm install
 pnpm dev
 ```
 
-which runs the hot-reloading dev server at http://localhost:5173
-
-## Download Model
-
-Tsinghua cloud link: https://cloud.tsinghua.edu.cn/d/eae39300ea7b4e96ae19/, download the directory `tfjs_models.zip`, unzip it and move into path `public/tfjs_models/`.
+which runs the hot-reloading dev server at http://localhost:5173.
 
 ## Acknowledgement
 

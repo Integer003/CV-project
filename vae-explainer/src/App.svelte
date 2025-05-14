@@ -205,14 +205,11 @@
 <Header></Header>
 
 <main>
-	<div class="mb-2 flex gap-2 items-center">
+	<!-- <div class="mb-2 flex gap-2 items-center">
 		<ImageSelector imageUrls={images} bind:selectedUrl={selectedImage} />
-	</div>
+	</div> -->
 
-	
-
-
-	<div class="mb-2 flex gap-2 items-center">
+	<!-- <div class="mb-2 flex gap-2 items-center">
 		<label for="enc-drate-selector" class="font-large text-gray-300">Encoder Dropout Rate:</label>
 		<select id="enc-drate-selector" bind:value={cur_enc_drate} class="border border-gray-200 rounded-md p-2 text-gray-300 bg-black w-20" on:change={forward(inDisp)}>
 			{#each enc_drate_list as drate}
@@ -239,7 +236,97 @@
 				<option value={lbl} class="text-white bg-black">{lbl}</option>
 			{/each}
 		</select>
-	</div>
+	</div> -->
+
+	<div class="mb-4 p-4 rounded-xl bg-gray-900 shadow-lg border border-gray-700 flex flex-wrap gap-4 items-center justify-start">
+  <!-- Encoder Dropout Rate -->
+  <div class="flex flex-col items-start">
+    <label for="enc-drate-selector" class="text-sm font-medium text-gray-400 mb-1">Encoder Dropout</label>
+    <select
+      id="enc-drate-selector"
+      bind:value={cur_enc_drate}
+      on:change={forward(inDisp)}
+      class="bg-gray-800 text-white rounded-md px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all duration-200 w-32"
+    >
+      {#each enc_drate_list as drate}
+        <option value={drate} class="bg-gray-800 text-white">{drate}</option>
+      {/each}
+    </select>
+  </div>
+
+  <!-- Decoder Dropout Rate -->
+  <div class="flex flex-col items-start">
+    <label for="dec-drate-selector" class="text-sm font-medium text-gray-400 mb-1">Decoder Dropout</label>
+    <select
+      id="dec-drate-selector"
+      bind:value={cur_dec_drate}
+      on:change={forward(inDisp)}
+      class="bg-gray-800 text-white rounded-md px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-200 w-32"
+    >
+      {#each dec_drate_list as drate}
+        <option value={drate} class="bg-gray-800 text-white">{drate}</option>
+      {/each}
+    </select>
+  </div>
+
+  <!-- Encoder Label -->
+  <div class="flex flex-col items-start">
+    <label for="enc-lbl-selector" class="text-sm font-medium text-gray-400 mb-1">Encoder Label</label>
+    <select
+      id="enc-lbl-selector"
+      bind:value={enc_lbl}
+      on:change={forward(inDisp)}
+      class="bg-gray-800 text-white rounded-md px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-200 w-32"
+    >
+      {#each enc_lbl_list as lbl}
+        <option value={lbl} class="bg-gray-800 text-white">{lbl}</option>
+      {/each}
+    </select>
+  </div>
+
+  <!-- Decoder Label -->
+  <div class="flex flex-col items-start">
+    <label for="dec-lbl-selector" class="text-sm font-medium text-gray-400 mb-1">Decoder Label</label>
+    <select
+      id="dec-lbl-selector"
+      bind:value={dec_lbl}
+      on:change={forward(inDisp)}
+      class="bg-gray-800 text-white rounded-md px-3 py-2 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400 transition-all duration-200 w-32"
+    >
+      {#each dec_lbl_list as lbl}
+        <option value={lbl} class="bg-gray-800 text-white">{lbl}</option>
+      {/each}
+    </select>
+  </div>
+  <!-- Image Selector -->
+  <div class="flex flex-col items-start">
+    <label class="text-sm font-medium text-gray-400 mb-1">Input Image</label>
+    <div class="flex gap-2 flex-wrap">
+      {#each images as src}
+        <img
+          src={src}
+          alt="sample"
+          width={40}
+          class="rounded-md transition-all cursor-pointer opacity-40 hover:opacity-70"
+          class:outlined={selectedImage === src}
+          on:click={() => {
+            selectedImage = src;
+            forward(inDisp); // Automatically update output on selection
+          }}
+        />
+      {/each}
+      <!-- Clear Button -->
+      <div
+        class="w-[40px] h-[40px] bg-black opacity-40 cursor-pointer rounded-md transition-all"
+        on:click={() => {
+          selectedImage = 'clear';
+          forward(inDisp);
+        }}
+        class:selected-outline={selectedImage === 'clear'}
+      ></div>
+    </div>
+  </div>
+</div>
 	
 
 	<svg
@@ -331,7 +418,6 @@
 
 		
 
-
 		<Trapezoid
 			label="Decoder"
 			fill="--light-blue"
@@ -343,7 +429,7 @@
 			trapHeights={[scatterSquare, inputOutputCanvasSize]}
 		/>
 
-		<foreignObject
+		<!-- <foreignObject
 			x={xLatent}
 			y={20}
 			width={latentWidth}
@@ -390,7 +476,63 @@
 				</div>
 			{/each}
 		</div>
-		</foreignObject>
+		</foreignObject> -->
+		<foreignObject
+  x={xLatent-20}
+  y={20}
+  width={latentWidth+40}
+  height={latentHeight}
+  style="
+    overflow: visible;
+    padding: 16px;
+  "
+>
+  <!-- Card-style container -->
+  <div class="bg-gray-900 rounded-xl shadow-lg border border-purple-600 p-4 space-y-3 w-full h-full">
+    <!-- Title or Header (optional) -->
+    <h3 class="text-sm text-purple-300 font-semibold mb-2">Latent Space Sliders</h3>
+
+    <!-- Slider list -->
+    <div class="space-y-3 overflow-y-auto max-h-[340px] pr-2">
+      {#each Array.from({ length: latentDims }, (_, i) => i) as index}
+        <div class="flex items-center gap-3">
+          <!-- Label and value -->
+          <div class="flex items-center gap-2 w-24 shrink-0">
+            <label
+              for="latent-slider-{index}"
+              class="text-gray-300 text-sm font-mono w-6 text-right"
+            >
+              {index + 1}
+            </label>
+            <div class="w-px h-4 bg-gray-600"></div>
+            <code class="text-gray-400 text-xs">{zz[index].toFixed(2)}</code>
+          </div>
+
+          <!-- Slider -->
+          <input
+            id="latent-slider-{index}"
+            type="range"
+            min="-5"
+            max="5"
+            step="0.01"
+            bind:value={zz[index]}
+            on:input={() => {
+              tf.tidy(() => {
+                const z = tf.tensor(zz, [1, latentDims]);
+                const input_dec_lbl = tf.oneHot(tf.tensor([dec_lbl], [1], "int32"), 11);
+                const dec = models[`${cur_enc_drate},${cur_dec_drate}`][1];
+                const xHat = dec.predict([input_dec_lbl, z]).reshape([-1, 784]);
+                outDisp = xHat.arraySync()[0];
+              });
+            }}
+            class="flex-1 h-2 appearance-none bg-gray-700 rounded-md accent-purple-500 cursor-pointer transition-all"
+          />
+        </div>
+      {/each}
+    </div>
+  </div>
+</foreignObject>
+
 
 
 
@@ -413,6 +555,33 @@
 			<Popover x={popoverX} y={popoverY} />
 		{/if}
 	</svg>
+
+	<div class="bg-gray-900 text-gray-200 p-6 rounded-xl shadow-md border border-gray-700 leading-relaxed space-y-4 text-sm sm:text-base transform -translate-y-80">
+  <p>
+    Our <span class="font-semibold text-blue-400">Conditional VAE Explainer</span> is structured as follows:
+  </p>
+  <p>
+    The <span class="font-semibold">Encoder</span> receives an input image and an <code class="bg-gray-800 px-1 py-0.5 rounded text-purple-300">encoder label</code> (ranging from <code>0</code> to <code>9</code> for digits, or <code>10</code> to indicate no label). It encodes the image into a 20-dimensional latent space, outputting <code class="bg-gray-800 px-1 py-0.5 rounded text-cyan-300">mean</code> and <code class="bg-gray-800 px-1 py-0.5 rounded text-cyan-300">var</code>.
+    You can manipulate the sampled latent vector <code class="text-purple-300">z</code> through the 20 sliders in the middle panel.
+  </p>
+  <p>
+    This vector <code class="text-purple-300">z</code>, along with a <code class="bg-gray-800 px-1 py-0.5 rounded text-green-300">decoder label</code> (also <code>0</code> to <code>9</code> or <code>10</code>), is passed into the <span class="font-semibold">Decoder</span> to reconstruct a digit image.
+  </p>
+  <p>
+    <span class="font-semibold text-purple-400">Encoder Dropout Rate</span>: the probability that the encoder label is replaced with <code>10</code>. A value of <code>0</code> means label information is always preserved; a value of <code>1</code> means it is always removed, making the encoder function like that of an unconditional VAE.
+  </p>
+  <p>
+    <span class="font-semibold text-green-400">Decoder Dropout Rate</span>: similarly, the probability that the decoder label is replaced with <code>10</code>.
+  </p>
+  <p>
+    You can draw freely on the input canvas to visualize real-time decoded outputs, or choose from predefined digit samples to feed into the encoder. Feel free to explore!
+  </p>
+  <p>
+    <span class="font-semibold text-yellow-300">Interesting observations:</span> Several sliders correspond to interpretable features like vertical/horizontal translation, small rotations, stroke thickness, scale changes, or digit deformation. Others may have little or no noticeable effect.
+  </p>
+</div>
+
+
 </main>
 
 <!--

@@ -69,7 +69,7 @@
   $: $popoverDecY = outputVector[1];
 </script>
 
-<svg class="fade-in" width={$popoverWidth} {height} {x} {y} style="overflow: visible;">
+<!-- <svg class="fade-in" width={$popoverWidth} {height} {x} {y} style="overflow: visible;">
   <foreignObject x={encodedVector[0] - 410} y={encodedVector[1]+25} width={390} height={200} class="label" style="outline: 1px solid transparent;" opacity={hto($hoveringInput || $notHoveringAny)} >
     <div class="flex gap-1 items-center" style="font-family: Geo; font-size: 22px;" >
       <b>1. VAEs Encode a Probability Distribution</b> <ArrowRightOutline size="lg"/>
@@ -79,15 +79,11 @@
     </div>
   </foreignObject>  
 
-  <!-- <rect x={0} y={0} {width} {height} fill="red" /> -->
   <rect x={encodedVector[0]} y={encodedVector[1]} width={30} height={encodedVectorHeight} stroke={encodedVectorStroke} stroke-width={1.5} fill={encodedVectorFill} opacity={ho($hoveringInput || $notHoveringAny)}/>
   <Sankey p1={[encodedVector[0]+30, encodedVector[1]]} p1Height={$vectorHeight} p2={meanVector} p2Height={$vectorHeight}  fill="orange" opacity={0.2}/>
   <Sankey p1={[encodedVector[0]+30, encodedVector[1]]} p1Height={$vectorHeight} p2={logVarVector} p2Height={$vectorHeight} fill="seagreen" opacity={0.2} />
 
-  <!-- <Curve source={[0, midBetweenMeanAndLogVar]} target={[width, midBetweenMeanAndLogVar]} /> -->
   <VectorShape x={meanVector[0]} y={meanVector[1]} values={$means} stroke="orange" tex={String.raw`\mu`} opacity={ho($hoveringInput || $hoveringZ || $notHoveringAny)}/>
-  <!-- <VectorShape x={logVarVector[0]} y={logVarVector[1]} values={[0, 0]}/> -->
-
 
 
   <LogVarTrick x={logVarVector[0]} y={logVarVector[1]}/>
@@ -130,7 +126,6 @@
   </div>
   </foreignObject>  
 
-  <!-- hovering boxes -->
   <Box bind:hovering={$hoveringZ} x={mulVector[0]-200} y={20} width={600} height={280}/>
   <Box bind:hovering={$hoveringSample} x={sampleVector[0]-200} y={sampleVector[1]-30} width={300} height={150+$vectorHeight}/>
   <Box bind:hovering={$hoveringlogVarTrick} x={logVarVector[0]} y={logVarVector[1]-30} width={200} height={50+$vectorHeight}/>
@@ -139,4 +134,4 @@
   <foreignObject x={mulVector[0]} y={outputVector[1]+220} width={900} height={500} style="overflow: visible;">
     <Code /> 
   <foreignObject />
-</svg>
+</svg> -->

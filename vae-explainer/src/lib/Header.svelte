@@ -8,10 +8,10 @@
 <nav>
 	<div id="inner">
 		<div class="left">
-			<img src="logo.svg" alt="logo" />
+			<!-- <img src="logo.svg" alt="logo" /> -->
 			<span id="title-desc">
-				Interact with a <b>V</b>ariational <b>A</b>uto<b>e</b>ncoder
-				(<b>VAE</b>) in your browser!
+				Interact with a dozen of <b>C</b>onditional <b>V</b>ariational <b>A</b>uto<b>e</b>ncoders
+				(<b>C-VAE</b>) in your browser!
 			</span>
 		</div>
 		<div class="right">
