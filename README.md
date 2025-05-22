@@ -12,6 +12,7 @@ Tsinghua cloud link: https://cloud.tsinghua.edu.cn/d/1a64ec43e6454169a8da/, down
 
 ### Deploy on webpage
 ``` bash
+cd vae-explainer
 pnpm install
 pnpm dev
 ```
