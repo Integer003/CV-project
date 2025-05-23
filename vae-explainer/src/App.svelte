@@ -113,7 +113,7 @@
 
 			inDisp = img;
 			const [enc, dec] = models[`${cur_enc_drate},${cur_dec_drate}`];
-			const [logstd, mu] = enc.predict([x, input_enc_lbl]);
+			const [mu, logstd] = enc.predict([x, input_enc_lbl]);
 			
 			// xs = mu.concat(logstd, 1).arraySync()[0];
 			
